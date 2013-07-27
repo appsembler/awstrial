@@ -1,0 +1,132 @@
+This document describes the recommended process for setting up a
+AwsTrial user.  It
+- uses IAM tools to create a new set of credentials that will only be used by
+  this awstrial install
+- creates a security group for this trial
+- creates a ssh keypair for this trial
+- writes the credentials to a file named ${prefix}-awscreds.txt
+
+At the end, it describes how to delete all of the above
+
+# there are in play here:
+#  AdminUser:        can create other with IAM (basically admin)
+#  AwsTrialUser:     we'll create this user for this awstrial
+#  GroupAndKeyUser:  can manage groups and keys
+#
+#  The 'GroupAndKeyUser' could be either the 'AdminUser' or the
+#  'AwsTrialUser'.  In the setup described here, the 'AwsTrialUser'
+#  is not given access to modify groups or keys, though.
+#  The simplest case is GroupAndKeyUser == AdminUser
+#
+#
+pmax=65535; pmin=1;
+prefix="awstrial-20101008"
+user="${prefix}"  # the AwsTrialUser
+keyname="${prefix}"
+pubkeyfile="${prefix}-ssh.pub"
+group="${prefix}"
+group_des="awstrial group for ${user}"
+REGIONS="us-east-1 us-west-1 eu-west-1 ap-southeast-1"
+
+#### begin #####
+mkdir "${prefix}"
+cd "${prefix}"
+ssh-keygen -f "${prefix}-ssh" -C "${user}@awstrial"
+
+#### As AdminUser create the AwsTrialUser user ####
+## set up iam for that user by 
+## export AWS_CREDENTIAL_FILE=AdminUser-creds-file.txt
+
+## if user existed, wipe him, start new
+if iam-userlistbypath | grep -q "user/${user}$"; then
+  # wipe keys
+  iam-userlistkeys -u ${user} | while read k; do read s; echo $k $s; done |
+     while read key state; do echo $key:$state; iam-userdelkey -k ${key} -u ${user}; done
+
+  # wipe policies
+  iam-userlistpolicies -u ${user} | while read k; do read s; echo $k $s; done |
+     while read pol; do echo policy:$pol; iam-userdelpolicy -u ${user} -p ${pol}; done
+  # delete the old user (if they existed)
+  iam-userdel -u ${user}
+fi
+
+## create the new AwsTrialUser
+iam-usercreate -v -u "${user}"
+( umask 066; iam-useraddkey -u "${user}" > ${prefix}-awscreds.txt )
+
+sed -i -e "1s/\(.*\)/AWS_ACCESS_KEY_ID='\1'/" \
+    -e "2s/\(.*\)/AWS_SECRET_ACCESS_KEY='\1'/" ${prefix}-awscreds.txt
+
+## create a policy that gives them minimum acl needed for awstrial
+cat > ${prefix}-policy.txt <<"EOF"
+{
+ "Statement":[ {
+    "Effect":"Allow",
+    "Action":["ec2:RunInstances","ec2:RebootInstances",
+              "ec2:GetConsoleOutput", "ec2:DescribeInstances" ],
+    "Resource":"*"
+  }, {
+    "Effect":"Allow",
+    "Action":["ec2:StopInstances","ec2:StartInstances",
+              "ec2:TerminateInstances"],
+    "Resource":"*"
+  }, {
+    "Effect":"Allow",
+    "Action":["ec2:DescribeImages"],
+    "Resource":"*"
+  }, {
+    "Effect":"Deny",
+    "NotAction":["ec2:*"],
+    "Resource":"*"
+  } ]
+}
+EOF
+
+# assign policy to user
+iam-useruploadpolicy -u ${user} -p ${prefix}-policy -f ${prefix}-policy.txt
+
+##### Now, with GroupAndKeyUser, create groups  #####
+## this could be the AwsTrialUser but not with above policy
+
+cmd() {
+  arg1=${1}; shift
+  echo ${arg1} "$@"
+  ec2-${arg1} --region ${REGION} "$@"
+  #xc2 "${arg1}" --region "${REGION}" "$@"
+}
+for REGION in ${REGIONS}; do
+   echo "==== region ${REGION} ===="
+   cmd delete-group "${group}"
+   cmd add-group --description "${group_des}" "${group}"
+   for prot in tcp udp icmp; do
+      iargs=""; [ "${prot}" = "icmp" ] && iargs="--icmp-type-code -1:-1"
+      cmd authorize "${group}" ${iargs} \
+         --protocol "${prot}" --port-range "${pmin}-${pmax}"
+   done
+   cmd delete-keypair "${keyname}"
+   cmd import-keypair "${keyname}" --public-key-file "${pubkeyfile}"
+done
+
+###### New user is now set up ######
+####################################
+
+
+##### To delete the account (after you're done) ######
+
+#### as GroupAndKeyUser delete the groups and keypairs
+for REGION in ${REGIONS}; do
+  cmd delete-group "${group}"
+  cmd delete-keypair "${keyname}"
+done
+
+#### As user with auth to manage users #####
+# delete the keys
+iam-userlistkeys -u ${user} | while read k; do read s; echo $k $s; done |
+  while read key state; do echo $key:$state; iam-userdelkey -k ${key} -u ${user}; done
+
+# delete the policies
+iam-userlistpolicies -u ${user} | while read k; do read s; echo $k $s; done |
+  while read pol; do echo policy:$pol; iam-userdelpolicy -u ${user} -p ${pol}; done
+
+# delete the user
+iam-userdel -u ${user}

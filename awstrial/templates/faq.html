@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Frequently Asked Questions | Ubuntu in the Cloud{% endblock %}
+{% block header %}
+        <h1>Frequently Asked Questions</h1>
+{% endblock %}
+{% block content %}
+<h4>What is this all about?</h4>
+<p>This a web application that launches instances of the <a href=http://www.ubuntu.com/server>Ubuntu Server</a> in the Cloud, inserts your <a href=https://help.ubuntu.com/community/SSH/OpenSSH/Keys>public SSH key</a>, and gives you remote <a href=https://help.ubuntu.com/community/RootSudo>root (sudo)</a> access to the system.  It's our unique way of showing off Ubuntu Server in the Cloud!</p>
+
+<h4>What are the requirements to participate in this trial?</h4>
+<p>You need an account at <a href=http://login.ubuntu.com>Ubuntu SSO</a> for authentication purposes.  And you need to accept the <a href=http://aws.amazon.com/agreement/>cloud provider's terms of service</a> and the <a href=http://www.ubuntu.com/community/conduct>Ubuntu Code of Conduct</a>.  That's it!</p>
+
+<h4>How long does the instance run?</h4>
+<p>The instance will be terminated approximately 55 minutes after launch.</p>
+
+<h4>How many instances can I run?</h4>
+<p>We are currently limiting this to one instance run per user.  If this program is successful, we may launch additional campaigns, spotlighting other Ubuntu releases in the future.  We certainly hope you enjoy your experience and choose to <a href=https://help.ubuntu.com/community/EC2StartersGuide>launch your own</a> Ubuntu Server in the Cloud.</p>
+
+<h4>What is the catch?</h4>
+<p>There is no catch.  Canonical will foot the bill for the instance, and terminate it at the end of your free trial hour.</p>
+
+<h4>What can I do in this instance?</h4>
+<p>You have <a href=https://help.ubuntu.com/community/RootSudo>root (sudo)</a> access inside of the instance, so you can do anything a system administrator can do, as long as you abide by the <a href=http://aws.amazon.com/agreement/>cloud provider's terms of service</a>, and the <a href=http://www.ubuntu.com/community/conduct>Ubuntu Code of Conduct</a>.  You can install applications, compile your code, host network services, poke around the filesystem, compare it to previous versions of Ubuntu or other UNIX or Linux distributions.</p>
+
+<h4>Is Canonical keylogging my instance, or monitoring my traffic?</h4>
+<p>Nope. There is an additional key in the 'ubuntu' and 'root' users authorized_keys file.  That is simply the key that the instance was launched with.  Feel free to remove them.</p>
+
+<h4>How long does it take to setup the instance?  Why is SSH responding, but I'm unable to login (ie, "Permission denied (publickey).")?</h4>
+<p>Your public key is installed only after the image configuration is complete.  Most instances are ready within about 2-3 minutes.  Depending on the profile you choose, it might take a few minutes longer.</p>
+
+<h4>Where can I find detailed documentation on the Ubuntu Server?</h4>
+<p>You can start with the <a href=https://help.ubuntu.com/10.04/serverguide/C/index.html>Ubuntu Server Guide</a>.  You might also find the <a href=https://help.ubuntu.com/community/ServerFaq>Server FAQ</a>, <a href=https://help.ubuntu.com/community>Community Documentation</a> and <a href=http://manpages.ubuntu.com>Manuals</a> useful.  If you still have not found what you are looking for, check our list of <a href=http://www.ubuntu.com/server/technical-resources>Technical Resources</a> for the Ubuntu Server.</p>
+
+<h4>Where I can I find real-time support for Ubuntu in the Cloud?</h4>
+<p>You can join us in <a href=https://help.ubuntu.com/community/InternetRelayChat>IRC</a> on <a href=http://freenode.net>irc.freenode.net</a>, in the <a href=http://irc.freenode.net/ubuntu-cloud>#ubuntu-cloud</a> channel (or the <a href=http://irc.freenode.net/ubuntu-server>#ubuntu-server</a> channel for Server-related support).</p>
+
+<h4>Can I run these images on my local system (outside cloud)?</h4>
+<p>You can <a href=http://www.ubuntu.com/server/get-ubuntu/download>freely download and install</a> the Ubuntu Server on your local hardware or in a virtual machine.  You can also <a href=https://help.ubuntu.com/community/UEC/Images>download and run</a> the specific machine image to run in your local UEC (Ubuntu Enterprise Cloud).  You might also want to <a href=https://help.ubuntu.com/community/EC2StartersGuide>setup your own public cloud account</a> and run other images and instances.</p>
+
+<h4>Where can I find the code to the web application used to launch these instances?</h4>
+<p>This code is licensed under the <a href=http://www.gnu.org/licenses/agpl-3.0.html>AGPL</a>, and is available at <a href=http://launchpad.net/awstrial>http://launchpad.net/awstrial</a>.</p>
+
+{% endblock %}

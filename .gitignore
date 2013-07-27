@@ -1,0 +1,4 @@
+*.pyc
+awstrial/awstrial.db
+awstrial/database.sqlite
+awstrial/local_settings.py

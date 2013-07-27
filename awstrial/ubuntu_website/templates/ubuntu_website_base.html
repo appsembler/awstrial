@@ -1,0 +1,194 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+        <title>{% block title %}Ubuntu Website{% endblock %}</title>
+
+        {% block defaulthead %}
+        <link rel="shortcut icon" href="{{ubuntu_website_media}}/images/favicon.ico" type="image/ico" />
+        <link rel="icon" href="{{ubuntu_website_media}}/images/favicon.ico" type="image/ico" />
+
+        <!-- stylesheets -->
+        <!--[if !IE ]><!-->
+        <link rel="stylesheet" type="text/css" href="{{ubuntu_website_media}}/css/default.css" />
+        <link rel="stylesheet" type="text/css" href="{{ubuntu_website_media}}/css/django_extras.css" />
+        <!--<![endif]-->
+
+        <!--[if gte IE 7]>
+        <link rel="stylesheet" type="text/css" href="{{ubuntu_website_media}}/css/ie.css" />
+        <![endif]-->
+
+        <!--[if IE 6 ]>
+        <link rel="stylesheet" type="text/css" href="{{ubuntu_website_media}}/css/ie6.css" media="screen, projection" />
+        <![endif]-->
+
+        <!--[if IE ]>
+        <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+        <![endif]-->
+        {% endblock %}
+{% block extrahead %}{% endblock %}
+</head>
+<body id="home">
+
+        {% if not is_popup %}
+<div id="page-header-bg">
+        <header id="page-header">
+                <div class="container" >
+                <nav id="main-nav">
+                {% block main_nav_links %}
+                        <a class="main-nav-item" href="javascript:void(0)" title="Item 1">Page 1</a>
+                        <a class="main-nav-item" href="javascript:void(0)" title="Item 2">Page 2</a>
+                        <a class="main-nav-item" href="javascript:void(0)" title="Item 3">Peage Long Name 3</a>
+                        <a class="main-nav-item" href="javascript:void(0)" title="Item 4">Page Shorter 4</a>
+                        <a class="main-nav-item" href="javascript:void(0)" title="Item 5">Page 5</a>
+                {% endblock %}
+                </nav>
+                <h1 id="top-logo">
+		<a href="{% block logo_href %}/{% endblock %}">
+                {% block logo_img %}<img class="png" id="the-logo" src="{{ubuntu_website_media}}/ubuntu.png" alt="Ubuntu" width="118" height="27" />{% endblock %}
+                <span id="loco">{% block logo_text %}Country Loco Team{% endblock %}</span>
+		</a>
+                </h1>
+
+                </div>
+        </header>
+</div>
+<div id="wrapper">
+        <aside id="page-related">
+                {% block sub_nav %}
+                <div class="container" id="sub-nav-container" >
+                <nav id="sub-nav">
+                {% block sub_nav_links %}
+                        <a class="sub-nav-item" href="javascript:void(0)" title="Indice">Indice</a>
+                        <a class="sub-nav-item" href="javascript:void(0)" title="FAQ">FAQ</a>
+                        <a class="sub-nav-item" href="javascript:void(0)" title="Regolamento">Regolamento</a>
+                        <a class="sub-nav-item" href="javascript:void(0)" title="Ricerca">Ricerca</a>
+                        <a class="sub-nav-item" href="javascript:void(0)" title="Accedi">Accedi</a>
+                        <a class="sub-nav-item" href="javascript:void(0)" title="Registrati">Registrati</a>
+                {% endblock %}
+                </nav>
+                
+                {% block search %}
+                <section id="searchbox-container">
+                		{% block search_box %}
+                        <input name="search" id="searchbox" value="Search..." />
+                        {% endblock %}
+                </section>
+                {% endblock %}
+                <hr class="divide" />
+                </div>
+                {% endblock %}
+        </aside>
+
+        {% endif %}
+
+        <section id="main-section">
+                <div class="container" >
+                {% block messages %}
+                {% endblock %}
+                {% block header %}
+                {% endblock %}
+                <section id="content">
+                        {% block content %}
+                        {% endblock %}
+                        <hr class="divide" />
+                </section>
+                <section id="general">
+                        {% block general %}
+                        {% endblock %}
+                        <hr class="divide" />
+                </section>
+                </div>
+         </section>
+</div>
+        {% if not is_popup %}
+
+        <footer id="page-footer">
+                <div class="container">
+                {% block footer %}
+                <!-- 1st Col   -->
+                <dl class="footer-content">
+                    {% block footer_list_1 %}
+                        <dt>
+                                Notes
+                        </dt>
+                        <dd>
+                                <ul class="footer-links">
+                                        <li class="footer-item"> <a class="footer-link" href="#" title="dumb">Privacy</a> </li>
+                                        <li class="footer-item"> <a class="footer-link" href="#" title="dumb">Legal</a> </li>
+                                </ul>
+                        </dd>
+                        <dt>
+                                More
+                        </dt>
+                        <dd>
+                                <p>
+                                        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+                                        Phasellus consequat leo lectus.
+                                </p>
+                        </dd>
+                    {% endblock %}
+                </dl>
+
+
+                <!-- 2nd Col   -->
+                <dl class="footer-content">
+                    {% block footer_list_2 %}
+                        <dt>
+                                <a class="footer-link-main">Footer Links</a>
+                        </dt>
+                        <dd>
+                        <ul class="footer-links">
+                                <li class="footer-item"> <a class="footer-link" href="#" title="dumb">Item A Long Name</a> </li>
+                                <li class="footer-item"> <a class="footer-link" href="#" title="dumb">Item B shorter</a> </li>
+                                <li class="footer-item"> <a class="footer-link" href="#" title="dumb">Item C Very Very Long Long Name</a> </li>
+                                <li class="footer-item"> <a class="footer-link" href="#" title="dumb">Item D Normal</a> </li>
+                                <li class="footer-item"> <a class="footer-link" href="#" title="dumb">Item E Lit</a> </li>
+                                <li class="footer-item"> <a class="footer-link" href="#" title="dumb">Item F</a> </li>
+                        </ul>
+                        </dd>
+                    {% endblock %}
+                </dl>
+
+
+
+                <!-- 3rd Col   -->
+                <dl class="footer-content" >
+                    {% block footer_list_3 %}
+                        <dt>
+                                <a class="footer-link-main">Footer Links</a>
+                        </dt>
+                        <dd>
+                        <ul class="footer-links" >
+                                <li class="footer-item">  <a class="footer-link" href="#" title="dumb">Item I Normal</a></li>
+                                <li class="footer-item">  <a class="footer-link" href="#" title="dumb">Item II </a></li>
+                                <li class="footer-item">  <a class="footer-link" href="#" title="dumb">Item III Very Very Long Long Name</a> </li>
+                                <li class="footer-item">  <a class="footer-link" href="#" title="dumb">Item IV </a></li>
+                                <li class="footer-item">  <a class="footer-link" href="#" title="dumb">Item V </a></li>
+                                <li class="footer-item">  <a class="footer-link" href="#" title="dumb">Item VI Normal</a> </li>
+                        </ul>
+                        </dd>
+                    {% endblock %}
+                </dl>
+                
+
+                <details class="foot-note">
+                        {% block footer_note %}<p> Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent sit amet lectus massa. </p>{% endblock %}
+                </details>
+                <a href="http://www.ubuntu.com/">
+			<img src="{{ubuntu_website_media}}/images/footer_logo.png">
+		</a>
+                {% endblock %}
+                </div>
+        </footer>
+
+        {% endif %}
+  <!-- IE6 hacks -->
+  <!--[if IE 6 ]>
+          <script src="{{ubuntu_website_media}}/js/pngFix.js"></script>
+          <script> DD_belatedPNG.fix('.png'); </script>
+  <![endif]-->
+        {% block extrafooter %}{% endblock %}
+</body>
+</html>

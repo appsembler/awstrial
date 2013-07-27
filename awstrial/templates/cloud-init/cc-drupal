@@ -1,0 +1,101 @@
+#cloud-config
+
+apt_update: true
+
+packages:
+ - mysql-client
+ - libwrap0
+ - apache2
+ - libaprutil1-dbd-sqlite3
+ - tcpd
+ - libapache2-mod-php5
+ - apache2.2-common
+ - apache2-utils
+ - php5-common
+ - libaprutil1
+ - libaprutil1-ldap
+ - php5-mysql
+ - mysql-server-core
+ - libdbi-perl
+ - libplrpc-perl
+ - apache2.2-bin
+ - libdbd-mysql-perl
+ - libhtml-template-perl
+ - libnet-daemon-perl
+ - libapr1
+ - mysql-server
+ - libmysqlclient18
+ - ssl-cert
+ - apache2-mpm-prefork
+ - mysql-common
+ - php5-gd
+ - openssl
+ - postfix
+
+fetchdrupal:
+ - &fetch_drupal | 
+   wget http://ftp.drupal.org/files/projects/drupal-7.12.tar.gz -O /tmp/drupal.tar.gz
+   cd /srv
+   tar xzf /tmp/drupal.tar.gz
+   sed -i 's,/var/www,/srv/drupal-7.12,g' /etc/apache2/sites-available/default
+   chown root:root -R /srv/*
+
+restartapache:
+ - &restart_apache |
+   /etc/init.d/apache2 restart
+
+config:
+ - &config |
+   mysqladmin -u root create drupal
+   drupalpass=$(dd if=/dev/urandom bs=1 count=5 | openssl base64 -e)
+   if [ -z "$drupalpass" ]; then
+       drupalpass="thisshouldnthappen"
+   fi
+   echo "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON drupal.* TO drupal@localhost IDENTIFIED BY \"$drupalpass\";" | mysql -u root
+   mysqlpass=$(dd if=/dev/urandom bs=1 count=5 | openssl base64 -e)
+   if [ -z "$mysqlpass" ]; then
+       pass="thisshouldnthappen"
+   fi
+   mysqladmin password "$mysqlpass"
+   cat > /etc/update-motd.d/99-mysql-password <<EOF
+   #!/bin/bash
+   echo
+   echo "Your MySQL root password is $mysqlpass"
+   echo
+   EOF
+   chmod 0755 /etc/update-motd.d/99-mysql-password
+   cd /srv/drupal-7.12/sites/default
+   cat default.settings.php | sed -e "/^\$databases/c\
+   \$databases = array (\n\
+     'default' =>\n\
+     array (\n\
+       'default' =>\n\
+       array (\n\
+         'driver' => 'mysql',\n\
+         'database' => 'drupal',\n\
+         'username' => 'drupal',\n\
+         'password' => \'$drupalpass\',\n\
+         'host' => 'localhost',\n\
+         'port' => '',\n\
+         'prefix' => '',\n\
+       ),\n\
+    ),\n\
+   );" > settings.php
+   mkdir files
+   chown -R www-data settings.php files
+
+configpostfix:
+ - &config_postfix |
+   public_hostname=$(curl -s http://169.254.169.254/latest/meta-data/public-hostname)
+   postconf -e myhostname=$public_hostname
+   postconf -e mydestination=$public_hostname,localhost
+   echo $public_hostname > /etc/mailname
+   postfix reload
+
+runcmd:
+ - [ sh, -c, *config_postfix ]
+ - [ sh, -c, *fetch_drupal ]
+ - [ sh, -c, *config ]
+ - [ sh, -c, *restart_apache ]
+ - touch /tmp/done
+

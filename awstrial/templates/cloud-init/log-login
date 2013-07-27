@@ -1,0 +1,82 @@
+#!/bin/sh
+
+f="/etc/update-motd.d/98-log-login"
+callback_bin="/var/lib/cloud/user-logged-in"
+
+writecb() {
+cat <<"EOF"
+#!/usr/bin/python
+from urllib import urlopen, urlencode
+from subprocess import Popen, PIPE
+from time import sleep
+from sys import argv, exit
+from os.path import isfile
+CALLBACK_URL="{{ callback_url }}"
+
+mdurl="http://169.254.169.254/2009-04-04/meta-data/%s"
+
+IPS_FILE=argv[0] + ".data"
+if len(argv) > 1: IPS_FILE=argv[1]
+
+def getip():
+	cmd=[ "last", "-n", "1", "-i" ]
+	for i in range(0,20):
+		p = Popen(cmd, stdout=PIPE)
+		(out,err) = p.communicate()
+		if p.wait() == 0:
+                    line1 = out.split("\n")[0]
+                    ip = line1.split()[2]
+                    if ip != "boot":
+			return(ip)
+		sleep(.5)
+	return("Error")
+
+def doit(purl,tries=10,napt=3):
+	ip=getip()
+	ips=[]
+	if isfile(IPS_FILE):
+		fp = open(IPS_FILE,"rb")
+		ips=fp.readlines()
+		fp.close()
+	if "%s\n" % ip in ips:
+		print "%s already logged" % ip
+		exit(0)
+
+	posted = False
+	for i in range(0,tries):
+		try:
+			iid=urlopen(mdurl % "/instance-id").read()
+			if not iid.startswith('i-'): raise Exception("bad iid in md")
+			pdata=urlencode({ 'instance-id' : iid, 'remote-ip' : ip })
+			resp = urlopen(purl,pdata).read()
+			posted = True
+			break
+		except Exception, e:
+			if i == tries: raise
+		sleep(napt)
+
+	if posted:
+		fp = open(IPS_FILE,"ab")
+		fp.write(ip + "\n")
+		fp.close()
+	print "%s" % resp.rstrip()
+	exit(0)
+
+doit(CALLBACK_URL)
+EOF
+}
+
+writecb > "${callback_bin}"
+chmod 755 "${callback_bin}"
+
+cat > "$f" <<"EOF"
+#!/bin/sh -e
+m=/var/lib/cloud/sem/first-login
+l=/var/lib/cloud/user-logged-in
+[ -x "${l}" ] && "$l" /var/lib/cloud/ips.list >> "${l}.out" 2>&1 &
+[ -f "${m}" ] && exit 0
+msg="$(date --utc): user logged in"
+echo "$msg" > /dev/console
+echo "$msg" > "${m}"
+EOF
+chmod 755 "$f"

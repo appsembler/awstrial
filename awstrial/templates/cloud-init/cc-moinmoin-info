@@ -1,0 +1,6 @@
+<p>Your system is set up to be a MoinMoin Wiki.</p>
+{% if instance.ph_time %}
+<p>Try going to <a href="http://{{instance.hostname}}/">http://{{instance.hostname}}/</a>
+and create a first user called Admin. For some administration tasks, go to
+<a href="http://{{instance.hostname}}/LanguageSetup" target="_blank" >http://{{instance.hostname}}/LanguageSetup</a></p>
+{% endif %}

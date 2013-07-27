@@ -1,0 +1,82 @@
+=== Required ===
+[ ] "Just launched page" improvements
+   [ ] remove confusing "you already launched an instance"  message
+       on first launch. Replace with "reload this page in a few min"
+   [ ] in the case where 'terminated' (already done), give better data
+   [ ] remove mention of email
+[ ] More info on what to do
+[ ] Provide flat "You need to setup an SSH key, with instructions"
+[ ] Add a 'please set my password' button. that uses ssh to
+    chpasswd && passwd -l && show user password
+[X] roll over to new regions when you receive 
+    This is basically required for us.  The canonical account limits are:
+      us-east-1:      150 instances
+      us-west-1:      50
+      eu-west-1:      50
+      ap-southeast-1: 50
+    [X] insufficient capacity (InsufficientInstanceCapacity)
+    [X] account reached limit (error_code='InstanceLimitExceeded')
+
+=== Want ===
+[X] 'bybobu me'
+   [X] button on runit
+   [X] modification of user data to enable
+       (run-cmd) byobu-launcher-install
+[ ] add logging (remove smoser's import sys; sys.stderr.write())
+[X] "config" info persisted in db
+    description file associated with config
+[X] config: wordpress [Andreas]
+    [X] add a file in /home/ubuntu/README - not needed
+    [X] add a link at (or redirect) at http://<host>/ to <host>/blog
+[X] config: moinmoin [Andreas]
+    [X] add a file in /home/ubuntu/README - not needed
+    [X] add a link at (or redirect) so that http://<host>/ works
+
+=== Nice to have ===
+[ ] ajax instance page launch page state "live" updates
+[ ] launchpad required group membership per campaign
+
+=== Version 2.0 ===
+[ ] Many of the constants in settings could be made campaign specific
+[ ] Domain name
+   [ ] Consider "short version".. and redirect to $shortversion.ubuntu.com
+   [ ] Get SSO whitelist
+[ ] Extend User model, perhaps adding "hass_ssh_ boolean
+[ ] better feedback form handle multiple 'submits' by a single user
+
+=== Done ===
+[X] database changes
+   [X] remove instance status
+   [X] add console initial
+   [X] add console final
+   [X] add hostname
+   [X] add ipv4 address
+[X] Actually terminate instances in aws_poll (or potentially other script)
+[X] user data
+   add 'at' jobs (schedule-warnings)
+     [X] to shut down (failsafe only)
+     [X] wall 10 minutes
+     [X] wall  5 minutes
+     [X] wall  1 minutes
+   [X] write message to console on first user login (log-first-login)
+[X] user data selection on button page
+[X] console log collection
+   probably want a separate crawler (console_poll) for this, as it would
+   likely slow down the main one, which does the rest of what we want
+   [X] database modification to store console logs (initial, and final)
+   [X] 4 minutes after start
+   [X] first notice of termination
+[X] Populate model details:
+   [X] IP address
+   [X] EC2 Hostname
+   [X] Console Start
+   [X] Console End
+[X] addressed 'stopped' state somehow.
+    currently, this just largely ignores 'stopped'.  The system
+    would stay in a stopped state for the normal alotted time, and then
+    be terminated (basically stopped == running)
+[X] ssh public keys collection
+    Before we can suggest that a user connect via ssh, we really should
+    give them ssh fingerprints.
+    - insert a "call home" call in user data, so system calls when reachable.
+[X] RT ticket for domain name (and hosting)

@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Run | Try Ubuntu Cloud Guest{% endblock %}
+
+{% block header %}
+	<h1>Try Ubuntu Cloud Guest</h1>
+{% endblock %}
+
+{% block content %}
+        <h3>Nearly there! Just some security information.</h3>
+
+        <p>All you need is an <a href=https://help.ubuntu.com/community/SSH/OpenSSH/ConnectingTo>SSH client</a>, and an <a href=https://help.ubuntu.com/community/SSH/OpenSSH/Keys>SSH public key</a> associated with your <a href=http://launchpad.net>Launchpad.net</a> account, and we will launch an <a href=http://www.ubuntu.com/server>Ubuntu Cloud Guest</a> instance in the Cloud for you.</p>
+
+        <p>We will give you the hostname and you can SSH directly to the instance with your public SSH key on file in <a href=http://launchpad.net>Launchpad</a>.  You will have full <a href=https://help.ubuntu.com/community/RootSudo>sudo (root) access</a>, so take it for an hour-long joyride, install applications, configure services, test your programs, and evaluate the overall experience.  We will terminate and clean up the instance automatically within an hour.</p>
+
+        {% if set_password %}
+        <p><em>You do not have ssh keys on file in your launchpad account.  We strongly recommend you follow the documentation mentioned above and add keys to your launchpad account.  Ssh key authentication is much more secure than password authentication.  However, if you would like to launch an instance without using ssh keys, you may do so.  Click 'Launch' below, and you will be generated a random password which you can then change after login</em></p>
+        {% endif %}
+        <div id="contact" class="clearfix">
+            <div id="c_form">
+                <form name="theform" action="." method="post" id="theform">
+                	{% csrf_token %}
+                    <fieldset>
+			<label for="config">1. Select the type of system that you would like to try.</label>
+			<p>
+			    {% if settings.CONFIGS %}
+			    <select name="config" is="config" class="fieldWidth">
+			    {% for c in settings.CONFIGS %}
+			    {% ifequal c.name "default" %}
+			       <OPTION VALUE="{{ c.name }}" SELECTED>{{ c.description }}</OPTION>
+			    {% else %}
+			       <OPTION VALUE="{{ c.name }}">{{ c.description }}</OPTION>
+			    {% endifequal %}
+			    {% endfor %}
+			    </select>
+			    {% endif %}
+			</p>
+			<p>
+			    2. Agree to the terms of Service
+			</p>
+			<p>
+			    <input class="checkbox"  type="checkbox" name="a" id="a" onClick="document.getElementById('launchbtn').disabled=(document.getElementById('a').checked)? false : true"/>
+			    <label for="a">I will use this instance in accordance with the <a href=http://aws.amazon.com/agreement/>Amazon Web Services Customer Agreement</a> and
+			    the <a href=http://www.ubuntu.com/community/conduct>Ubuntu Code of Conduct</a>.</label><br/>
+		        </p>
+			<p>
+			    <input class="checkbox"  type="checkbox" name="opt_marketing" id="opt_marketing" />
+			    <label for="opt_marketing">I want to receive Canonical's newsletter. My details will be handled in accordance with the Canonical <a href="http://www.canonical.com/legal">privacy policy</a>.</label><br/>
+		        </p>
+			<label for="launchbtn">3. Launch your instance.</label>
+                        <p>After clicking 'Launch', your instance will start, and your hour will begin.</p>
+                        {% if set_password %}
+                        <input type=hidden name="set_password" value=1 id="password" />
+                        {% endif %}
+                    </fieldset><!-- end submit -->
+                    <input name="launchbtn" src="{{ubuntu_website_media}}/images/button.png" class="submitButton" id="launchbtn" type="submit" value="Launch" disabled="true" />
+                </form>
+
+            </div><!-- end c_form -->
+        </div>
+
+
+{% endblock %}

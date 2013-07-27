@@ -1,0 +1,48 @@
+#!/bin/sh
+
+sem="/var/lib/cloud/sem/byobu-countdown.${INSTANCE_ID}"
+[ -e "${sem}" ] && exit 0
+
+# Add AWSTrial countdown widget only for 'ubuntu' user
+sudo -Hu ubuntu sh -c 'mkdir -p ~/.byobu/bin/ &&
+   cat > ~/.byobu/bin/1_countdown && chmod +x ~/.byobu/bin/1_countdown' <<"EOF"
+#!/bin/sh
+#
+#    countdown: count down the time-to-live of an instance
+#    Copyright (C) 2010 Canonical Ltd.
+#
+#    Authors: Dustin Kirkland <kirkland@canonical.com>
+#
+#    This program is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, version 3 of the License.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+# Copy this file to ~/.byobu/bin/1_countdown and make it executable
+
+genesis="/etc/hostname"		# Some file signaling instance "birth"
+ttl=55				# Time to Live in minutes
+
+initiation=$(stat --printf %Z $genesis)
+expiration=$((initiation + ttl * 60))
+now=$(date +%s)
+min_left=$(((expiration - now) / 60))
+sec_left=$(((expiration - now) % 60))
+[ $min_left -lt 0 ] && min_left="0"
+[ $sec_left -lt 0 ] && sec_left="0"
+if [ $min_left -lt 5 ]; then
+	c1="\005{= wr}"
+	c2="\005{-}"
+fi
+printf "$c1(%02d:%02d)$c2" $min_left $sec_left
+EOF
+
+[ -d "${sem%/*}" ] || mkdir -p "${sem%/*}"
+date > "${sem}"

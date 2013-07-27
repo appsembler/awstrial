@@ -1,0 +1,68 @@
+{% extends "ubuntu_website_base.html" %}
+{% load i18n %}
+
+{% block title %}Index | Try Ubuntu Cloud Gest{% endblock %}
+
+{% block logo_text %}in the Cloud{% endblock %}
+
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{{MEDIA_URL}}/css/style.css" />
+{% endblock %}
+
+{% block main_nav_links %}
+    <a class="main-nav-item" href="/" title="{% trans "Home" %}">{% trans "Home" %}</a>
+    <a class="main-nav-item" href="/faq" title="{% trans "FAQ" %}">{% trans "FAQ" %}</a>
+    <a class="main-nav-item" href="/feedback" title="{% trans "Feedback" %}">{% trans "Feedback" %}</a>
+    {% if user.is_authenticated %}
+      {% if user.is_staff %}
+        <a class="main-nav-item" href="/admin" title="{% trans "Admin" %}">{% trans "Admin" %}</a>
+      {% endif %}
+        <a class="main-nav-item" href="/logout" title="{% trans "Log Out" %}: {{ user.username }}">{% trans "Log Out" %}</a>
+    {% endif %}
+{% endblock %}
+
+{% block search %}
+{% endblock %}
+
+{% block sub_nav %}
+{% endblock %}
+
+{% block sub_nav_links %}
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+{% block general %}
+{% endblock %}
+
+{% block footer_list_1 %}
+{% endblock %}
+
+{% block footer_list_2 %}
+{% endblock %}
+
+{% block footer_list_3 %}
+{% endblock %}
+
+{% block footer_note %}
+&copy; 2010, 2011 Canonical Ltd. Ubuntu and Canonical are registered trademarks of Canonical Ltd.
+{% endblock %}
+
+{% block extrafooter %}
+    {% if google_analytics_id %}
+    <script type="text/javascript">
+
+      var _gaq = _gaq || [];
+      _gaq.push(['_setAccount', '{{ google_analytics_id }}']);
+      _gaq.push(['_trackPageview']);
+
+      (function() {
+      var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+      ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+      var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+
+    </script>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Feedback | Ubuntu in the Cloud{% endblock %}
+{% block header %}
+        <h1>Feedback</h1>
+{% endblock %}
+{% block content %}
+<h2> We really do appreciate your feedback on what you thought of this trial.</h2>  
+<h3>Let us know what you did, and perhaps what you would like to do given another trial.</h3>
+<form action="" method="POST">
+<fieldset id="feedback">
+	{{form}}
+</fieldset>
+<input src="{{ubuntu_website_media}}/images/button.png" class="submitButton" type="submit" value="Send Feedback" />
+</form>
+{% endblock %}

@@ -1,0 +1,22 @@
+Django==1.4.5
+PyYAML==3.10
+South==0.8.1
+boto==2.9.9
+pydns==2.3.6
+python-dateutil==2.1
+simplejson==3.3.0
+wsgiref==0.1.2
+mock==1.0.1
+psycopg2==2.5.1
+httplib2==0.8
+django-allauth==0.12.0
+
+-f http://launchpad.net/launchpadlib/trunk/1.6.0/+download/launchpadlib-1.6.0.tar.gz#egg=launchpadlib-1.6.0
+launchpadlib==1.6.0
+
+# could also install django-adminaudit via PyPi, but might not be as up-to-date as this one
+-e bzr+ssh://bazaar.launchpad.net/~canonical-isd-hackers/django-adminaudit/trunk
+
+#django-openid-auth==0.3
+#python-openid==2.2.5
+#-e bzr+ssh://bazaar.launchpad.net/~canonical-isd-hackers/django-pgtools/trunk

@@ -1,0 +1,26 @@
+#!/bin/sh
+lpid="{{ launchpad_id }}"
+{% if password %}
+password=1
+{% else %}
+password=0
+{% endif %}
+
+[ "${lpid#openiduser}" = "${lpid}" ] ||
+   { echo "not attemping key import for openid user ${lpid}"; exit 0; }
+
+try() {
+	local try=0 lpid="${1}" tries="${2:-1}"
+	while [ $try -lt $tries ] && try=$(($try+1)); do
+		sudo -Hu ubuntu ssh-import-id "${lpid}" && return 0
+		sleep $try
+	done
+	echo "failed to import keys for ${lpid} in ${try} tries"
+	return 1
+}
+
+try "${lpid}" 1 && exit 0
+[ "$password" = "1" ] && exit 0
+
+try "${lpid}" 10 &
+exit

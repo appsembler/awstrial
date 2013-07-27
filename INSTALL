@@ -1,0 +1,37 @@
+== Install dependencies in Virtualenv ==
+- virtualenv --clear --no-site-packages env
+- source ./env/bin/activate
+- pip install -r requirements.txt
+- cd awstrial
+
+== Install dependencies from repos ==
+- apt-get install python-django python-django-openid-auth python-yaml python-boto python-dateutil python-django-south python-dns
+- cd awstrial
+- mkdir dl
+  ( cd dl && wget http://pypi.python.org/packages/source/d/django-maintenancemode/django-maintenancemode-0.9.2.tar.gz -O django-maintenancemode-0.9.2.tar.gz )
+  tar -xvzf dl/django-maintenancemode-0.9.2.tar.gz
+  ln -snf django-maintenancemode-0.9.2/maintenancemode .
+
+== Project Setup ==
+- bzr branch lp:~awstrial-dev/ubuntu-website/light-django-theme/ ubuntu_website
+- cp local_settings.py.sample local_settings.py
+- modify local_settings.py
+- ./manage.py syncdb
+- ./manage.py migrate
+  # Note, that current directory will have to be named 'awstrial'
+  #   surely there is some way around that.
+  follow prompts
+- create a campaign
+  ./manage.py add_campaign footest "My Foo Test" 3 false
+- ./manage.py runserver 0:XXXXX
+   where XXXXX is port number
+
+At this point:
+- BASEURL/
+  should show a list of instances
+- BASEURL/admin
+  allows you to login with with auto provided in 'manage.py syncdb' above
+- BASEURL/<campaign>
+  requires launchpad login, lets you launch an instance
+
+

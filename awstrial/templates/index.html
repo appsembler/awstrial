@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+
+{% block title %}Ubuntu in the Cloud{% endblock %}
+
+{% block header %}
+        <h1>Try Ubuntu Cloud Guest</h1>
+{% endblock %}
+
+{% block content %}
+        <h2>Try the latest Ubuntu Cloud Guest images, entirely on our dime!</h2>
+
+        <h3>Canonical will pay for you to use Ubuntu Cloud Guest in the cloud for an hour. We will take care of the registration (we need your email), set up and even provide some pre-configured applications to choose from. We really want you to see for yourself.</h3>
+
+<h2>What do you need to do?</h2> 
+<h3>As part of the login process you will be asked to set up login and security credentials. But don’t worry, it’s really quick and easy.</h3>
+        
+
+{% if campaign %}
+    {% for c in campaign %}
+        {% if c.remaining %}
+          <a class="linkButton" href="/{{ c.name }}/start">{{c.verbose_name}}</a>
+        {% else %}{{c.verbose_name}} - All trial instances have been used.
+        {% endif %}
+    {% endfor %}
+{% else %}
+    <h2> Service currently offline - please come back soon. </h2> 
+{% endif %}
+
+{% endblock %}

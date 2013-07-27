@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+
+{% block title %}Run | Ubuntu Cloud Guest{% endblock %}
+
+{% block content %}
+<h2>Ubuntu Cloud Guest</h2>
+
+{% if instance.terminated_time %}
+<h3>Your session has expired.</h3>
+<p>Thank you for taking part in this offering.  We hope you found it useful.  If you would like to share comments on your experience, <a href="/feedback/">please do so</a>.</p>
+
+{% else %}
+  {% if not instance.ph_time or not instance.running_time %}
+<meta http-equiv="refresh" content="15">
+<center>
+<form name="dots">
+<br><img src=/media/ubuntu.png width=250><br>
+<input type=text size=0 name=d1 style="border:0;text-align:center;background-color:#f7f7f7;width:40px;height:50px;font-size:30px">
+<input type=text size=0 name=d1 style="border:0;text-align:center;background-color:#f7f7f7;width:40px;height:50px;font-size:30px">
+<input type=text size=0 name=d1 style="border:0;text-align:center;background-color:#f7f7f7;width:40px;height:50px;font-size:30px">
+<input type=text size=0 name=d1 style="border:0;text-align:center;background-color:#f7f7f7;width:40px;height:50px;font-size:30px">
+<input type=text size=0 name=d1 style="border:0;text-align:center;background-color:#f7f7f7;width:40px;height:50px;font-size:30px">
+</form>
+</center>
+<script>
+<!--
+var count = 0
+var state = 1
+function dots() {
+	animate(count % 5, state)
+	count += 1
+	if (count % 5 == 0 )
+		if (state == 0)
+			state = 1
+		else
+			state = 0
+	setTimeout("dots()",500)
+}
+function animate(dot, show) {
+	if (show == 1)
+		document.dots.elements[dot].value = "."
+	else
+		document.dots.elements[dot].value = ""
+}
+dots()
+-->
+</script>
+  {% endif %}
+  {% if not instance.running_time and not instance.ph_time and not instance.pubkeys %}
+  Your instance request has been reserved with EC2, and is being provisioned.  This process normally takes a minute or two, and will refresh automatically.
+  {% else %}
+<h3>You now have an Ubuntu Cloud Guest running in the Cloud!</h3>
+<p>Your instance is now running.  Your remaining time is approximately: <form name="counter" style="display: inline;" ><input type="text" name="time" class="counter" style="border:0px; width=20px; background-color:#f7f7f7;"></form>
+</p>
+<script>
+<!--
+var now = new Date
+var seconds = {{ instance.reservation_time|date:"U" }} + 55*60 - {% now "U" %}
+document.counter.time.value=seconds
+function countdown() {
+	if (seconds <= 0)
+		seconds = 0
+	else
+		seconds-=1
+	h = parseInt(seconds / 60)
+	if (h < 10)
+		h = "0" + h
+	s = seconds % 60
+	if (s < 10)
+		s = "0" + s
+	document.counter.time.value = h + ":" + s
+	setTimeout("countdown()",1000)
+}
+countdown()
+-->
+</script>
+    {% if not instance.ph_time %}
+<h3>Your instance is booting and configuring itself.  Please be patient... This normally takes about a minute.  This page will automatically reload until the system is completely configured.</h3>
+      {% if instance.ip %}
+<p>Your instance has ip address {{instance.ip}}</p>
+      {% endif %}
+    {% else %}
+    {% if instance.password %}
+  <p>Your randomly generated one time password is '<b>{{ instance.password }}</b>'.</p>
+    {% endif %}
+  <p>You can <a href=https://help.ubuntu.com/community/SSH/OpenSSH/ConnectingTo target="_blank" >SSH</a> to your Cloud Server using:</p>
+<pre>    ssh ubuntu@{{instance.ip}}</pre>
+<p>The instance's SSH key fingerprint is</p>
+<pre>
+{{instance.pubkeys}}</pre>
+
+        {% if debug %}
+            {% if instance.testdata %}
+<p>Test Data:</p>
+<pre>{{instance.testdata}}</pre>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+  {% endif %}
+{% endif %}
+
+<hr/>
+<h3>Now what?</h3>
+    {% if config.info_tmpl %}
+      {% include config.info_tmpl %}
+      {% if cloudconfig %}
+      <script>
+// http://www.netlobo.com/div_hiding.html
+function toggleLayer( whichLayer )
+{
+  var elem, vis;
+  if( document.getElementById ) // this is the way the standards work
+    elem = document.getElementById( whichLayer );
+  else if( document.all ) // this is the way old msie versions work
+      elem = document.all[whichLayer];
+  else if( document.layers ) // this is the way nn4 works
+    elem = document.layers[whichLayer];
+  vis = elem.style;
+  // if the style.display value is blank we try to figure it out here
+  if(vis.display==''&&elem.offsetWidth!=undefined&&elem.offsetHeight!=undefined)
+    vis.display = (elem.offsetWidth!=0&&elem.offsetHeight!=0)?'block':'none';
+  vis.display = (vis.display==''||vis.display=='block')?'none':'block';
+}
+      </script>
+      <style type="text/css">
+#cloudconfig {
+border:1px solid #ccc;
+background:#f2f2f2;
+display: none;
+}
+pre {
+   font-size: 12px;
+   padding: 0;
+   margin: 0;
+   background: #f0f0f0;
+   border-left: 1px solid #ccc;
+   border-bottom: 1px solid #ccc;
+   line-height: 20px;
+   background: url(pre_code_bg.gif) repeat-y left top;
+   width: 600px;
+   overflow: auto;
+   overflow-Y:hidden;
+}
+pre.cc {
+   background: url(pre_code_bg_ylw.gif) repeat-y left top;
+   border: none;
+}
+      </style>
+      <p>Your instance was launched with cloud-config content in the user-data field.  To launch one on your own configured similarly, use the same cloud-config.</p>
+      <p><a onclick="toggleLayer('cloudconfig');" title="View Cloud Config">View Cloud-Config</a></p>
+      <div class="code" id="cloudconfig"><pre class="cc"><code>{{ cloudconfig }}</code></pre></div>
+      {% endif %}
+    {% endif %}
+<p>We hope you enjoyed your experience of Ubuntu Cloud Guest and began to see the possibilities of cloud computing with Ubuntu.</p>
+<p>You might be interested in:</p>
+<ul>
+<li><a href="http://cloud.ubuntu.com/ami/">Finding Ubuntu Cloud instances for real</a></li>
+<li><a href="http://www.canonical.com/about-canonical/resources/white-papers/ubuntu-cloud-technologies-future-thinking-companies">Read the Ubuntu Cloud Overview</a></li>
+<li><a href="/feedback/">Provide Feedback</a></li>
+</ul>
+
+{% endblock %}

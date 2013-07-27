@@ -1,0 +1,48 @@
+#!/usr/bin/python
+from urllib import urlopen, urlencode
+from subprocess import Popen, PIPE
+from time import sleep
+from sys import argv, exit
+CALLBACK_URL="{{ callback_url }}"
+
+mdurl="http://169.254.169.254/2009-04-04/meta-data/%s"
+
+dumpk="""
+hn=$1; set -e; f=$(mktemp); trap "rm -f '$f'" EXIT;
+rkeys="rsa,dsa"; [ -f "/etc/ssh/ssh_host_ecdsa_key" ] && rkeys="$rkeys,ecdsa"
+{% if debug %}
+echo "Requesting fingerprints for: $rkeys" >> /var/log/instance-testing
+{% endif %}
+ssh-keyscan -t "$rkeys" localhost 2>/dev/null > "$f"
+[ -n "${hn}" ] && sed -i "s,localhost,${hn}," "$f"
+ssh-keygen -lf "$f"
+"""
+
+def doit(purl,tries=10,napt=3):
+	for i in range(0,tries):
+		try:
+			iid=urlopen(mdurl % "/instance-id").read()
+			if not iid.startswith('i-'): raise Exception("bad iid in md")
+			args=(['/bin/bash', '-c', dumpk, "getkey", iid])
+			process = Popen(['/bin/bash', '-c', dumpk, "dumpkey", iid], stdout=PIPE)
+			(pubkeys,err) = process.communicate()
+			if process.wait() != 0: raise Exception("dumpkey exit nonzero")
+			{% if debug %}
+			try:
+				tdata = open('/var/log/instance-testing').read()
+				pdata=urlencode({ 'instance-id' : iid, 'pubkeys' : pubkeys, 'testdata' : tdata })
+			except IOError:
+				pdata=urlencode({ 'instance-id' : iid, 'pubkeys' : pubkeys })
+			{% else %}
+			pdata=urlencode({ 'instance-id' : iid, 'pubkeys' : pubkeys })
+			{% endif %}
+			resp = urlopen(purl,pdata).read()
+			print "posted keys to %s. got: %s" % (purl,resp)
+			exit(0)
+			
+		except Exception, e:
+			if i == tries: raise
+
+		sleep(napt)
+
+doit(CALLBACK_URL)

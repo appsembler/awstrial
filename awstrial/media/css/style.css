@@ -1,0 +1,121 @@
+/* 960px header and footer */
+header#page-header
+{
+	width: 944px;
+	margin: 0 auto;
+	padding: 0 16px;
+	position:relative;
+	-moz-border-radius:0 0 4px 4px;
+	-moz-box-shadow:0 0 4px #888888;
+	-webkit-border-radius:0 0 4px 4px;
+	-webkit-box-shadow:0 0 4px #888888;
+	z-index:3;
+}
+
+footer#page-footer
+{
+	width: 944px;
+	margin: 0 auto 16px;
+	padding: 0 16px;
+	position:relative;
+}
+
+#page-footer div.container
+{
+	width: 940px;
+	height: 72px;
+	position: relative;
+}
+
+.foot-note
+{
+	font-size: 10px;
+	line-height: 14px;
+	color: #aea79f;
+	position: absolute;
+	bottom: 16px;
+}
+
+fieldset
+{
+	padding: 8px;
+	background: #dfdcd9;
+	margin: 0 0 8px 0;
+}
+
+fieldset .fieldWidth
+{
+	width: 286px;
+}
+
+label
+{
+	font-size: 12px;
+	line-height: 16px;
+	color: #333;
+	margin: 0 0 8px 0;
+}
+
+.checkbox
+{
+	margin: 0;
+	vertical-align: -1px;
+}
+
+select
+{
+	margin: 0 0 8px 0;
+}
+
+.submitButton
+{
+	background: url('/ubuntu-website/media/images/button.png');
+	border: none;
+	height: 40px;
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	font-size: 24px;
+	line-height: 28px;
+	padding: 6px;
+	font-family: 'Ubuntubeta','Ubuntu','Bitstream Vera Sans','DejaVu Sans', Tahoma, sans-serif;
+	color: white;
+}
+
+.submitButton[disabled=true]
+{
+	color: #888;
+}
+
+.submitButton:hover
+{
+	background: url('/ubuntu-website/media/images/button-hover.png');
+}
+
+.linkButton
+{
+	background: url('/ubuntu-website/media/images/button.png');
+	-moz-border-radius: 4px;
+	-webkit-border-radius: 4px;
+	font-size: 18px;
+	line-height: 28px;
+	padding: 6px;
+	margin: 8px 0;
+	color: white !important;
+	display: inline-block;
+}
+
+.linkButton:hover
+{
+	background: url('/ubuntu-website/media/images/button-hover.png');
+}
+
+#feedback label
+{
+	display: block;
+}
+
+#feedback textarea
+{
+	width: 286px;
+	resize: none;
+}

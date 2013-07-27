@@ -1,0 +1,21 @@
+#!/bin/sh
+LAUNCH_TIME="{{ launch_time }}"
+
+if [ -z "${NO_REDIR}" ]; then
+	out="/var/lib/cloud/data/schedule-warnings.out"
+	exec >"${out}" 2>&1
+fi
+
+[ -n "${1}" ] && LAUNCH_TIME=$1
+fm="%H:%M %Y-%m-%d"
+for m in 10 5 1; do
+	t=$(date +"$fm" --utc --date "${LAUNCH_TIME} + 55 minutes - $m minutes")
+	at "$t" <<EOF
+echo "You have about $m minutes before instance termination" | wall
+EOF
+done
+
+t=$(date +"$fm" --date "${LAUNCH_TIME} + 59 minutes")
+at ${t} <<EOF
+/sbin/halt
+EOF

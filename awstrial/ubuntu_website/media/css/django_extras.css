@@ -1,0 +1,61 @@
+/*-  Form Decoration [Django]
+-------------------------------------------------------------------------------------------------------- */
+
+FORM TH, .form-item-label                                                                                    { font-size:0.75em; font-weight: bold; text-align: left; padding-right: 10px;}
+FORM TD, .form-item-value                                                                                    { font-size:0.75em; font-weight: normal; text-align: left}
+FORM INPUT[type=text], .form-item-field                                            { background-color:#f0f0f0; border: 1px solid #CCCCCC; height:16px;  margin:7px 0px 7px 9px; padding:3px; width:180px; }
+FORM INPUT[type=text]:focus, .form-item-field:focus                                 { background-color:#f7f7f7; border: 1px solid #DD4814; }
+ 
+
+/*-  Data Table Decoration [Django]
+-------------------------------------------------------------------------------------------------------- */
+
+.odd, tr.odd 						{ background-color: #F3F3F3; }
+.even, tr.even 						{ background-color: #FAFAFA; }
+
+TABLE.data_table 					{ }
+TABLE.data_table TH					{ font-size: 0.75em; font-weight: bold; padding: 5px; text-align: center;}
+TABLE.data_table TR					{ }
+TABLE.data_table TD					{ font-size: 0.75em; padding: 5px; vertical-align: top; }
+
+a {
+	color: #DD4814;
+}
+a:visited {
+	color: #b12a10;
+}
+.resource {
+    width: 32px;
+    height: 32px;
+    padding: 2px;
+    margin-top: 4px;
+    margin-bottom: 3px;
+    float: left;
+    border: 1px white solid;
+    }
+#main-content .resource:hover {
+    border: 1px #eee solid;
+    }
+
+#page-footer .container div.copyright {
+    font-size:0.75em;  
+    line-height:1.5em;
+    }
+
+#page-footer .container div.loggedin {
+    font-size:0.75em;  
+    line-height:1.5em;
+    float:left;width :45%;
+    margin-bottom:10px;
+    margin-top:5px;
+    }
+
+#page-footer .container div.lang_switcher {
+    font-size:0.75em;  
+    line-height:1.5em;
+    float:right; 
+    width :55%;
+    margin-bottom:10px;
+    margin-top:5px;
+    }
+

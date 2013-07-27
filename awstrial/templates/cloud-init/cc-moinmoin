@@ -1,0 +1,61 @@
+#cloud-config
+
+apt_update: true
+
+apt_upgrade: true
+
+packages:
+ - python-moinmoin
+ - fckeditor
+ - python-flup
+
+configmoin:
+ - &config_moin |
+   cat > /etc/moin/ec42wiki.py <<EOF
+   # -*- coding: utf-8 -*-
+   from farmconfig import FarmConfig
+   class Config(FarmConfig):
+
+       # basic options (you normally need to change these)
+       sitename = u'ec42wiki' # [Unicode]
+       interwikiname = u'Ec42Wiki' # [Unicode]
+
+       # a) if most wiki content is in a single language
+       #page_front_page = u"MyStartingPage"
+
+       # b) if wiki content is maintained in many languages
+       page_front_page = u"FrontPage"
+       data_dir = '/var/lib/ec42wiki'
+       data_underlay_dir = '/var/lib/ec42wiki/underlay'
+       superuser = [u"Admin",]
+   EOF
+   mkdir -p /var/lib/ec42wiki /var/www/ec42wiki
+   cp -r /usr/share/moin/data/* /usr/share/moin/underlay /var/lib/ec42wiki/
+   chown -R www-data: /var/lib/ec42wiki /var/www/ec42wiki
+   sed -i -e 's,("mywiki",("ec42wiki",' /etc/moin/farmconfig.py
+
+configapache:
+ - &config_apache |
+   public_hostname=$(curl -s http://169.254.169.254/latest/meta-data/public-hostname)
+   cat > /etc/apache2/sites-available/ec42wiki <<EOF
+   <VirtualHost *:80>
+     ServerName $public_hostname
+     DocumentRoot /var/www/ec42wiki/
+     Alias /moin_static193/applets/FCKeditor/ /usr/share/fckeditor/
+     Alias /moin_static193/ /usr/share/moin/htdocs/
+     ScriptAlias / /usr/share/moin/server/moin.cgi/
+   </VirtualHost>
+   EOF
+   a2ensite ec42wiki
+   /etc/init.d/apache2 reload
+
+restartapache:
+ - &restart_apache |
+   /etc/init.d/apache2 restart
+
+runcmd:
+ - [ sh, -c, *config_apache ]
+ - [ sh, -c, *config_moin ]
+ - [ sh, -c, *restart_apache ]
+ - touch /tmp/done
+

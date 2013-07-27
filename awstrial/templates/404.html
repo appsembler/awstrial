@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+
+{% block title %}Error | Try Ubuntu Cloud Guest{% endblock %}
+
+{% block defaulthead %}
+{% with '/ubuntu-website/media' as ubuntu_website_media %}
+{{ block.super }}
+{% endwith %}
+{% endblock %}
+
+{% block logo_img %}
+{% with '/ubuntu-website/media' as ubuntu_website_media %}
+{{ block.super }}
+{% endwith %}
+{% endblock %}
+
+{% block extrahead %}
+{% with '/media' as MEDIA_URL %}
+{{ block.super }}
+{% endwith %}
+{% endblock %}
+{% block main_nav_links %}{% endblock %}
+
+
+{% block content %}
+<h2>404</h2>
+<p>This page could not be found</p>
+{% endblock %}

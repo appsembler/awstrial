@@ -1,0 +1,47 @@
+DEBUG = True
+STATIC_SERVE = DEBUG
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+        'NAME': 'database.sqlite',                      # Or path to database file if using sqlite3.
+        'USER': '',                      # Not used with sqlite3.
+        'PASSWORD': '',                  # Not used with sqlite3.
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+    }
+}
+
+# These are your AWS access credentials
+AWS_ACCESS_KEY_ID = 'ABCDEFGHIJKLMNOPQRST'
+AWS_SECRET_ACCESS_KEY = 'ZyXwVuTsRqPoNmLkJiHgFeDcBa98765432101234'
+
+# BASE_URL must be addressible from the instance, it will be
+# used for 'info_callback'
+BASE_URL = 'http://localhost:8000/'
+
+from settings import default_ami_ids
+# ALTERNATE_CLOUD = {
+#     'region': 'eucalyptus',
+#     'ami': 'ami-00000002',
+#     'endpoint': 'neptune',
+#     'endpoint_path': '/services/Eucalyptus',
+#     'port': 8773,
+#     'is_secure': False,
+# }
+
+REGION2AMI=default_ami_ids['ebs']
+INSTANCE_TYPE="m1.small"
+INSTANCE_KEY_NAME=""
+INSTANCE_SECURITY_GROUPS=("default",)
+
+USER_BLOCK_EMAIL_BLACKLIST = False
+USER_BLOCK_TOR_GATEWAY = False
+
+# Disable statistics in development
+GOOGLE_ANALYTICS_ID = None
+
+LPLIB_CACHE = '/tmp/lp'
+
+# Enable this to set the path for logging in local dev
+LOG_PATH = '/tmp/awstrial.log'

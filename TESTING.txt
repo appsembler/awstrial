@@ -1,0 +1,25 @@
+== Running tests ==
+
+Run tests with::
+
+  python manage.py test trial 
+
+Here are items that need to be tested:
+
+ 0. Turn off debugging in the local settings file
+ 1. Home page shows up fine
+   a. If a campaign is active, a campaign button should appear
+   b. If no campaign is active, no button should appear
+ 2. When clicking a campaign button you should be taken to SSO, not 
+    not launchpad login
+ 3. Launch an instance with each option using a SSO account with a 
+    launchpad association (username and SSH key) ensuring each runs
+    properly
+    * You can trigger an instance to terminate early by changing the 
+      "Spawn" time back an hour and then waiting for a minute until the
+      cron task terminates it.
+    * Once terminated, you can delete it to create a new instance
+ 4. Launch an instance with "base install" option using a SSO account 
+    without a launchpad association (no username, no SSH key) ensuring 
+    that you are able to connect to the instance and that you're prompted
+    for a password

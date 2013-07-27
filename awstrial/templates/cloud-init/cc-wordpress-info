@@ -1,0 +1,4 @@
+<p>Your system is set up to be a Wordpress Website</p>
+{% if instance.ph_time %}
+Try going to <a href="http://{{instance.hostname}}/" target="_blank" >http://{{instance.hostname}}/</a>.
+{% endif %}
